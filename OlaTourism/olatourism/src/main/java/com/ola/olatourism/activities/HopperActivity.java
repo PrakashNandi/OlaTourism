@@ -52,6 +52,7 @@ import com.ola.olatourism.R;
 import com.ola.olatourism.adapter.PlaceAutocompleteAdapter;
 import com.ola.olatourism.adapter.PlacesListViewAdapter;
 import com.ola.olatourism.parser.DirectionsJsonParser;
+import com.ola.olatourism.util.OlaConstants;
 
 import org.json.JSONObject;
 
@@ -81,6 +82,7 @@ public class HopperActivity extends FragmentActivity implements GoogleApiClient.
     ButtonRectangle planHopBtnReal;
     FragmentManager fragmentManager = getFragmentManager();
     public static ArrayList<PlacesDTO> placeList = new ArrayList<>();
+    String sourceAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +195,7 @@ public class HopperActivity extends FragmentActivity implements GoogleApiClient.
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(HopperActivity.this, TripPriorityActivity.class);
+            intent.putExtra(OlaConstants.ORIGIN_LOC, sourceAddress);
             startActivity(intent);
         }
     }
@@ -254,7 +257,7 @@ public class HopperActivity extends FragmentActivity implements GoogleApiClient.
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        String sourceAddress = getAddressFromCoOrdinates(latLng);
+        sourceAddress = getAddressFromCoOrdinates(latLng);
         etSource.setText(sourceAddress);
 
         Log.d(TAG, "sourceAddress : "+sourceAddress);
@@ -263,7 +266,6 @@ public class HopperActivity extends FragmentActivity implements GoogleApiClient.
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 16));
         }
-
 
     }
 

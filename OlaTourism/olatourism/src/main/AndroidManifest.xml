@@ -65,6 +65,10 @@
             android:name=".activities.TripPriorityActivity"
             android:label="@string/title_activity_trip_priority" >
         </activity>
+        <activity
+            android:name=".activities.DriveMeActivity"
+            android:label="@string/title_activity_drive_me" >
+        </activity>
     </application>
 
 </manifest>

@@ -10,5 +10,6 @@
     <string name="title_activity_prepare_request_token">PrepareRequestTokenActivity</string>
     <string name="place_details">&lt;b>%1$s&lt;/b>&lt;br/>&lt;i>Place Id: %2$s&lt;/i>&lt;br/>Address: %3$s&lt;br/>Phone: %4$s&lt;br/>Website: %5$s</string>
     <string name="title_activity_trip_priority">TripPriorityActivity</string>
+    <string name="title_activity_drive_me">DriveMeActivity</string>
 
 </resources>

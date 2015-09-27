@@ -50,5 +50,14 @@
         android:layout_marginBottom="45dp"
         android:background="@android:color/transparent"
         android:divider="@color/divider_color"/>
+    <com.ola.materialdesign.views.ButtonRectangle
+        android:id="@+id/upadtePlan"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Plan My Hop"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:textSize="16dp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

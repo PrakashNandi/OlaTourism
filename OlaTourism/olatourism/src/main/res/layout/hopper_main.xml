@@ -41,7 +41,7 @@
         android:id="@+id/planHopBtnReal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Plan My Hop"
+        android:text="Update Plan"
         android:textColor="@android:color/white"
         android:layout_alignParentBottom="true"
         android:textSize="16dp"

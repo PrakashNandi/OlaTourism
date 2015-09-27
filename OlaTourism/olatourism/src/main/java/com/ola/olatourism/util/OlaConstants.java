@@ -12,4 +12,7 @@ public class OlaConstants {
     public static final String AUTHORIZATION_CODE_SERVER_URL = "http://sandbox-t.olacabs.com/oauth2/authorize";
 
     public static final String USER_TOKEN = "user_token";
+    public static final String ORIGIN_LOC = "origin";
+
+    public static final String SELECT_LOC = "select";
 }
