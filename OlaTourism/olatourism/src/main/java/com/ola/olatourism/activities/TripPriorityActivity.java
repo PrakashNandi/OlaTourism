@@ -1,6 +1,8 @@
 package com.ola.olatourism.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ola.olatourism.R;
 import com.ola.olatourism.adapter.PlacesListViewAdapter;
+import com.ola.olatourism.util.OlaConstants;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -28,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import model.CabAvailabilityDTO;
 import model.PlacesDTO;
 import model.RideDetailsDTO;
 
@@ -37,11 +41,17 @@ public class TripPriorityActivity extends Activity {
     ArrayList<PlacesDTO> placeList = HopperActivity.placeList;
     private PlacesListViewAdapter placesListViewAdapter;
     private RadioGroup radioGroup;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_priority);
+
+        sharedPreferences = getSharedPreferences(OlaConstants.USER_TOKEN,
+                Context.MODE_PRIVATE);
+
+
 
         lstPlaces = (ListView) findViewById(R.id.placeListView);
         radioGroup = (RadioGroup) findViewById(R.id.radioPriorityType);
@@ -59,7 +69,8 @@ public class TripPriorityActivity extends Activity {
             }
         });
 
-        new CabEstimate().execute("12.842471", "77.675480", "12.954749", "77.675480", "sedan");
+//        new CabEstimate().execute("12.842471", "77.675480", "12.954749", "77.675480", "sedan");
+        new CabAvailability().execute("12.842471", "77.675480", "sedan");
     }
 
     class CabEstimate extends AsyncTask<String, Void, String> {
@@ -135,27 +146,20 @@ public class TripPriorityActivity extends Activity {
 
         }
 
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while ((line = bufferedReader.readLine()) != null) {
-                result += line;
-            }
-            if (null != inputStream) {
-                inputStream.close();
-            }
-            return result;
-        }
     }
 
     class CabAvailability extends AsyncTask<String, Void, String> {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
         protected String doInBackground(String... params) {
-            String startLan = (String) params[0];
-            String startLon = (String) params[1];
-            String category = (String) params[2];
+            String startLan = params[0];
+            String startLon = params[1];
+            String category = params[2];
 
             URL url = null;
             String response = null;
@@ -185,7 +189,16 @@ public class TripPriorityActivity extends Activity {
                 int status = urlConnection.getResponseCode();
                 BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
                 response = convertInputStreamToString(inputStream);
-                return response;
+                Log.d("HELLO", "response : " + response);
+
+
+                Gson gson = new Gson();
+
+                Type listType = new TypeToken<RideDetailsDTO>(){}.getType();
+                response = response.replace("{}", "null");
+                RideDetailsDTO cabAvailabilityDTO = gson.fromJson(response, listType);
+
+                Log.d("HELLO", "cab availabitilty rideDetailsDTO : " + cabAvailabilityDTO.categories.get(0).display_name + " ");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -195,21 +208,27 @@ public class TripPriorityActivity extends Activity {
                     e.printStackTrace(); //If you want further info on failure...
                 }
             }
-            return "";
+            return response;
         }
 
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while ((line = bufferedReader.readLine()) != null) {
-                result += line;
-            }
-            if (null != inputStream) {
-                inputStream.close();
-            }
-            return result;
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
         }
+    }
+
+    private String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while ((line = bufferedReader.readLine()) != null) {
+            result += line;
+        }
+        if (null != inputStream) {
+            inputStream.close();
+        }
+        return result;
     }
 
     class BookACab extends AsyncTask<String, Void, String> {
@@ -262,6 +281,12 @@ public class TripPriorityActivity extends Activity {
                 }
             }
             return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
         }
 
         private String convertInputStreamToString(InputStream inputStream) throws IOException {
